@@ -224,3 +224,5 @@ __marimo__/
 .idea
 data
 .DS_Store
+# CI: исполненные копии ноутбуков
+.ci-notebooks/
