@@ -222,7 +222,7 @@ __marimo__/
 
 # Custom
 .idea
-data
 .DS_Store
 # CI: исполненные копии ноутбуков
 .ci-notebooks/
+week_1/part_2/data
