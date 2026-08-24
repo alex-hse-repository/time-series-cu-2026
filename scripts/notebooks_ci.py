@@ -149,7 +149,7 @@ def run_notebook(week: str, notebook: str, output_dir: Path) -> bool:
         str(output_dir),
         notebook,
     ]
-    env = {**os.environ, "MPLBACKEND": "Agg"}
+    env = {**os.environ}
     ok = subprocess.run(command, cwd=ROOT_PATH, env=env).returncode == 0
     print("::endgroup::", flush=True)
     print(f"{'OK  ' if ok else 'FAIL'} {notebook}", flush=True)
