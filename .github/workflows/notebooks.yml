@@ -1,0 +1,70 @@
+name: Test notebooks
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      run_all:
+        description: "Прогнать все ноутбуки, а не только изменённые"
+        type: boolean
+        default: false
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  # Диапазон, по которому считаются изменения. Для push после мержа PR
+  # `github.event.before` — предыдущий коммит main, то есть в diff попадает
+  # весь смерженный PR. Для ручного запуска базы нет — прогоняется всё.
+  BASE_SHA: ${{ github.event.before }}
+  HEAD_SHA: ${{ github.sha }}
+  RUN_ALL: ${{ inputs.run_all }}
+
+jobs:
+  detect:
+    name: Detect changed weeks
+    runs-on: ubuntu-latest
+    outputs:
+      weeks: ${{ steps.detect.outputs.weeks }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - id: detect
+        run: |
+          weeks="$(python3 scripts/notebooks_ci.py list-weeks)"
+          echo "Занятия к прогону: $weeks"
+          echo "weeks=$weeks" >> "$GITHUB_OUTPUT"
+
+  notebooks-test:
+    name: ${{ matrix.week }}
+    needs: detect
+    if: needs.detect.outputs.weeks != '[]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        week: ${{ fromJSON(needs.detect.outputs.weeks) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: ${{ matrix.week }}/uv.lock
+
+      - name: Install dependencies
+        run: uv sync --project ${{ matrix.week }} --frozen
+
+      - name: Run notebooks
+        run: python3 scripts/notebooks_ci.py run --week ${{ matrix.week }}
