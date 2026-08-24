@@ -15,8 +15,9 @@
         Прогоняет изменённые ноутбуки занятия через `uv run ... nbconvert`.
 
 Диапазон изменений берётся из `--base`/`--head` или переменных окружения
-`BASE_SHA`/`HEAD_SHA`. Если база недоступна (первый push в ветку, force-push)
-или задан `--all` / `RUN_ALL=true`, прогоняется всё.
+`BASE_SHA`/`HEAD_SHA` и считается от точки ветвления (`base...head`). Если база
+недоступна (force-push, ручной запуск) или задан `--all` / `RUN_ALL=true`,
+прогоняется всё.
 """
 
 import argparse
@@ -67,8 +68,12 @@ def changed_files(base: str, head: str) -> list[str] | None:
     """Пути, изменённые между base и head. None — если диапазон недоступен."""
     if not commit_exists(base) or not commit_exists(head):
         return None
+    # Три точки — diff от точки ветвления (`git merge-base`), а не от самой базы.
+    # В PR база успевает уехать вперёд, и двухточечный diff показал бы ещё и
+    # чужие коммиты main — прогонялись бы ноутбуки, которых PR не касался.
+    #
     # Строчная `d` в diff-filter исключает удалённые файлы: их запускать нечего.
-    output = git("diff", "--name-only", "--diff-filter=d", base, head)
+    output = git("diff", "--name-only", "--diff-filter=d", f"{base}...{head}")
     return [line for line in output.splitlines() if line]
 
 
@@ -144,7 +149,7 @@ def run_notebook(week: str, notebook: str, output_dir: Path) -> bool:
         str(output_dir),
         notebook,
     ]
-    env = {**os.environ, "MPLBACKEND": "Agg"}
+    env = {**os.environ}
     ok = subprocess.run(command, cwd=ROOT_PATH, env=env).returncode == 0
     print("::endgroup::", flush=True)
     print(f"{'OK  ' if ok else 'FAIL'} {notebook}", flush=True)
