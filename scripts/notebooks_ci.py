@@ -54,11 +54,13 @@ def git(*args: str) -> str:
 def commit_exists(ref: str) -> bool:
     if not ref or set(ref) == {"0"}:
         return False
-    return subprocess.run(
+    result = subprocess.run(
         ["git", "cat-file", "-e", f"{ref}^{{commit}}"],
         cwd=ROOT_PATH,
         capture_output=True,
-    ).returncode == 0
+        check=False,
+    )
+    return result.returncode == 0
 
 
 def changed_files(base: str, head: str) -> list[str] | None:
@@ -72,9 +74,7 @@ def changed_files(base: str, head: str) -> list[str] | None:
 
 def all_weeks() -> list[str]:
     return sorted(
-        path.name
-        for path in ROOT_PATH.glob(WEEK_GLOB)
-        if (path / "pyproject.toml").is_file()
+        path.name for path in ROOT_PATH.glob(WEEK_GLOB) if (path / "pyproject.toml").is_file()
     )
 
 
@@ -82,17 +82,12 @@ def skipped_notebooks() -> set[str]:
     if not SKIP_FILE.is_file():
         return set()
     lines = SKIP_FILE.read_text(encoding="utf-8").splitlines()
-    return {
-        line.strip()
-        for line in lines
-        if line.strip() and not line.strip().startswith("#")
-    }
+    return {line.strip() for line in lines if line.strip() and not line.strip().startswith("#")}
 
 
 def week_notebooks(week: str) -> list[str]:
     return sorted(
-        path.relative_to(ROOT_PATH).as_posix()
-        for path in (ROOT_PATH / week).glob("part_*/*.ipynb")
+        path.relative_to(ROOT_PATH).as_posix() for path in (ROOT_PATH / week).glob("part_*/*.ipynb")
     )
 
 
@@ -124,11 +119,7 @@ def changed_weeks(changed: list[str] | None) -> list[str]:
     if changed is None:
         return [week for week in weeks if notebooks_to_run(week, None)]
     touched = {path.split("/", 1)[0] for path in changed}
-    return [
-        week
-        for week in weeks
-        if week in touched and notebooks_to_run(week, changed)
-    ]
+    return [week for week in weeks if week in touched and notebooks_to_run(week, changed)]
 
 
 def run_notebook(week: str, notebook: str, output_dir: Path) -> bool:
@@ -177,9 +168,7 @@ def command_run(args: argparse.Namespace) -> int:
     output_dir.mkdir(parents=True, exist_ok=True)
 
     failed = [
-        notebook
-        for notebook in notebooks
-        if not run_notebook(args.week, notebook, output_dir)
+        notebook for notebook in notebooks if not run_notebook(args.week, notebook, output_dir)
     ]
     print(f"\nЗапущено: {len(notebooks)}, упало: {len(failed)}")
     for notebook in failed:
@@ -200,9 +189,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
 
     parser = argparse.ArgumentParser(description=__doc__)
     subparsers = parser.add_subparsers(dest="command", required=True)
-    subparsers.add_parser("list-weeks", parents=[common]).set_defaults(
-        func=command_list_weeks
-    )
+    subparsers.add_parser("list-weeks", parents=[common]).set_defaults(func=command_list_weeks)
 
     run_parser = subparsers.add_parser("run", parents=[common])
     run_parser.add_argument("--week", required=True, choices=all_weeks())
