@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-  pull_request:
   workflow_dispatch:
     inputs:
       run_all:
@@ -23,12 +22,10 @@ env:
   # Диапазон, по которому считаются изменения; скрипт берёт его от точки
   # ветвления (`git diff base...head`).
   #
-  # В PR это база и голова самого PR — в diff попадают только его коммиты,
-  # независимо от того, сколько раз с тех пор обновилась main. Для push после
-  # мержа `github.event.before` — предыдущий коммит main, то есть весь
-  # смерженный PR. Для ручного запуска базы нет — прогоняется всё.
-  BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
-  HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+  # Для push после мержа `github.event.before` — предыдущий коммит main, то
+  # есть весь смерженный PR. Для ручного запуска базы нет — прогоняется всё.
+  BASE_SHA: ${{ github.event.before }}
+  HEAD_SHA: ${{ github.sha }}
   RUN_ALL: ${{ inputs.run_all }}
   # Версия питона, на которой поднимаются окружения занятий. Занятия просят
   # `>=3.11`, поэтому без пина uv взял бы то, что стоит на раннере, и прогон
