@@ -15,6 +15,7 @@
 
 # %%
 import sys
+import os
 
 # Проверяем, запущен ли ноутбук в среде Google Colab
 if "google.colab" in sys.modules:
