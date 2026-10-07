@@ -1,0 +1,20 @@
+[project]
+name = "seminar-6"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+
+dependencies = [
+  "matplotlib~=3.10.8",
+  "seaborn~=0.13.2",
+  "statsmodels~=0.14.6",
+  "statsforecast~=2.1.1",
+  "ts-etna[prophet,torch]==3.0.0",
+  "pyod~=2.0.6",
+  "adtk==0.6.2",
+  "ipykernel~=7.3.0",
+  "ipywidgets~=8.1.8",
+  "jinja2~=3.1",
+  "nbclient~=0.11.0"
+]
