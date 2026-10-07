@@ -13,6 +13,17 @@
 #     name: ts-cu-2026-week6-dev
 # ---
 
+# %%
+import sys
+import os
+
+# Проверяем, запущен ли ноутбук в среде Google Colab
+if "google.colab" in sys.modules:
+    # !pip install uv -q
+    # !wget https://raw.githubusercontent.com/alex-hse-repository/time-series-cu-2026/refs/heads/main/week_6/pyproject.toml -q
+    # !uv pip install -r pyproject.toml --system -q
+    os.kill(os.getpid(), 9)  # force runtime restart
+
 # %% [markdown]
 # # Неделя 6. Методы декомпозиции: классическая, STL, MSTL
 #
@@ -74,13 +85,13 @@ def plot_decomps(results, title=None, figsize=(12, 7)):
 # - **Синтетика** — ряд с известными компонентами: можно измерить ошибку разложения.
 
 # %%
-air = pd.read_csv("../data/air_passengers.csv", index_col="Month", parse_dates=True)["#Passengers"].asfreq("MS")
+air = pd.read_csv("https://raw.githubusercontent.com/alex-hse-repository/time-series-cu-2026/refs/heads/main/week_6/data/air_passengers.csv", index_col="Month", parse_dates=True)["#Passengers"].asfreq("MS")
 log_air = np.log(air)
 
 elec = elec_equip.load().data.iloc[:, 0].asfreq("MS")
 
 pjme = (
-    pd.read_csv("../data/PJME_hourly.csv", parse_dates=["Datetime"])
+    pd.read_csv("https://raw.githubusercontent.com/alex-hse-repository/time-series-cu-2026/refs/heads/main/week_6/data/PJME_hourly.csv.gz", parse_dates=["Datetime"])
     .groupby("Datetime")["PJME_MW"].mean()  # дубли
     .asfreq("h")
     .interpolate()  # пропуски

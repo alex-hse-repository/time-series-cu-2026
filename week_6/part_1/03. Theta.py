@@ -13,6 +13,17 @@
 #     name: ts-cu-2026-week6-dev
 # ---
 
+# %%
+import sys
+import os
+
+# Проверяем, запущен ли ноутбук в среде Google Colab
+if "google.colab" in sys.modules:
+    # !pip install uv -q
+    # !wget https://raw.githubusercontent.com/alex-hse-repository/time-series-cu-2026/refs/heads/main/week_6/pyproject.toml -q
+    # !uv pip install -r pyproject.toml --system -q
+    os.kill(os.getpid(), 9)  # force runtime restart
+
 # %% [markdown]
 # # Неделя 6. Модель Theta и её вариации
 #
@@ -70,7 +81,7 @@ pd.set_option("display.precision", 3)
 #   `ds` — номер месяца
 
 # %%
-air = pd.read_csv("../data/air_passengers.csv", parse_dates=["Month"])
+air = pd.read_csv("https://raw.githubusercontent.com/alex-hse-repository/time-series-cu-2026/refs/heads/main/week_6/data/air_passengers.csv", parse_dates=["Month"])
 air = air.rename(columns={"Month": "ds", "#Passengers": "y"}).assign(unique_id="air")[["unique_id", "ds", "y"]]
 H_AIR = 24
 air_train, air_test = air.iloc[:-H_AIR], air.iloc[-H_AIR:]
@@ -82,7 +93,7 @@ syn = pd.DataFrame({"unique_id": "syn", "ds": t + 1, "y": syn_y})
 H_SYN = 24
 syn_train, syn_test = syn.iloc[:-H_SYN], syn.iloc[-H_SYN:]
 
-m4 = pd.read_csv("../data/m4_monthly_sample.csv")
+m4 = pd.read_csv("https://raw.githubusercontent.com/alex-hse-repository/time-series-cu-2026/refs/heads/main/week_6/data/m4_monthly_sample.csv")
 m4.groupby("unique_id").size().describe()[["count", "min", "50%", "max"]]
 
 
