@@ -6,13 +6,13 @@ readme = "README.md"
 requires-python = ">=3.11"
 
 dependencies = [
-  "matplotlib~=3.10.8",
+  "matplotlib~=3.11.1",
   "seaborn~=0.13.2",
-  "statsmodels~=0.14.6",
-  "statsforecast~=2.1.1",
-  "ts-etna[prophet,torch]==3.0.0",
-  "pyod~=2.0.6",
-  "adtk==0.6.2",
+  "ts-etna~=3.0.0",
+  "sktime~=1.0.1",
+  "scikit-learn~=1.7.2",
+  "skforecast~=0.26.0",
+  "shap~=0.49.0",
   "ipykernel~=7.3.0",
   "ipywidgets~=8.1.8",
   "jinja2~=3.1",
