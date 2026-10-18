@@ -14,7 +14,11 @@ import pandas as pd  # noqa: E402
 from etna.datasets import TSDataset  # noqa: E402
 from etna.metrics import MAE, WAPE  # noqa: E402
 from etna.pipeline import Pipeline  # noqa: E402
-from etna.transforms import DateFlagsTransform, FilterFeaturesTransform, OneHotEncoderTransform  # noqa: E402
+from etna.transforms import (  # noqa: E402
+    DateFlagsTransform,
+    FilterFeaturesTransform,
+    OneHotEncoderTransform,
+)
 
 ROOT = Path(__file__).resolve().parent
 METRICS = [WAPE(), MAE()]
@@ -48,13 +52,20 @@ def load_onion(new_year_days: int = 0) -> TSDataset:
     new_year_days > 0 добавляет known-future индикаторы `new_year_minus_k` для каждого из
     k = 1…new_year_days дней перед Новым годом (см. ноутбук 1, раздел «Праздники»).
     """
-    df = pd.read_csv("https://raw.githubusercontent.com/alex-hse-repository/time-series-cu-2026/refs/heads/main/week_7/data/onion_sales.csv", parse_dates=["day"])
+    df = pd.read_csv(
+        "https://raw.githubusercontent.com/alex-hse-repository/time-series-cu-2026/refs/heads/main/week_7/data/onion_sales.csv",
+        parse_dates=["day"],
+    )
     df = df.rename(columns={"day": "timestamp", "rto": "target"}).assign(segment="onion")
     if not new_year_days:
         return make_ts(df)
-    dates = pd.date_range(df["timestamp"].min(), df["timestamp"].max() + pd.Timedelta(days=60), freq="D")
+    dates = pd.date_range(
+        df["timestamp"].min(), df["timestamp"].max() + pd.Timedelta(days=60), freq="D"
+    )
     days_left = (pd.to_datetime((dates.year + 1).astype(str) + "-01-01") - dates).days
-    exog = pd.DataFrame({f"new_year_minus_{k}": (days_left == k).astype(int) for k in range(1, new_year_days + 1)})
+    exog = pd.DataFrame(
+        {f"new_year_minus_{k}": (days_left == k).astype(int) for k in range(1, new_year_days + 1)}
+    )
     return make_ts(df, exog=exog.assign(timestamp=dates, segment="onion"))
 
 
@@ -82,7 +93,9 @@ def dow(prefix: str = "dow") -> list:
     """
     raw = f"{prefix}_day_number_in_week"
     return [
-        DateFlagsTransform(day_number_in_week=True, day_number_in_month=False, is_weekend=False, out_column=prefix),
+        DateFlagsTransform(
+            day_number_in_week=True, day_number_in_month=False, is_weekend=False, out_column=prefix
+        ),
         OneHotEncoderTransform(in_column=raw, out_column=f"{prefix}_ohe"),
         FilterFeaturesTransform(exclude=[raw]),
     ]

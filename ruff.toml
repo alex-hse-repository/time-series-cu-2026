@@ -67,6 +67,8 @@ ignore = [
   "B905",
   # Фиксированный seed через legacy-API numpy — так во всех учебниках.
   "NPY002",
+  "C408", # Unnecessary `dict()` call (rewrite as a literal)
+
 ]
 
 [lint.isort]

@@ -226,3 +226,6 @@ __marimo__/
 # CI: исполненные копии ноутбуков
 .ci-notebooks/
 week_1/part_2/data
+drafts
+tools
+CLAUDE.md
