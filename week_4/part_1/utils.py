@@ -1,9 +1,11 @@
-from sktime.utils.plotting import plot_correlations
-from statsmodels.tsa.stattools import adfuller, kpss, acf
-import pandas as pd
 import warnings
-from statsmodels.tools.sm_exceptions import InterpolationWarning
+
 import matplotlib.pyplot as plt
+import pandas as pd
+from sktime.utils.plotting import plot_correlations
+from statsmodels.tools.sm_exceptions import InterpolationWarning
+from statsmodels.tsa.stattools import adfuller, kpss
+
 
 def tsdisplay(y, lags=36, title=None, figsize=(13, 6)):
     """Панель «ряд + ACF + PACF» — сквозной инструмент диагностики семинара."""
