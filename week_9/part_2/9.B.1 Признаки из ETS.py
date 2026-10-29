@@ -7,11 +7,11 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.19.6
+#       jupytext_version: 1.19.4
 #   kernelspec:
-#     display_name: "Python (ts-cu-2026 \xB7 week 9(dev))"
+#     display_name: "Python (ts-cu-2026 \xB7 week 9)"
 #     language: python
-#     name: ts-cu-2026-week9-dev
+#     name: ts-cu-2026-week9
 # ---
 
 # %% [markdown]
@@ -103,7 +103,7 @@ def fit_eval(name, X_tr, y_tr, X_te, post=lambda p: p):
 # %% [markdown]
 # ## 1. Прогноз как признак: ловушка in-sample
 #
-# Самый очевидный способ (так сделано в исходном ноутбуке 9.4): признак `ets` на train — значения,
+# Самый очевидный способ: признак `ets` на train — значения,
 # которые ETS выдаёт на самом train (`fittedvalues`, в sktime — `predict` с отрицательным `fh`),
 # на test — прогноз ETS на 36 шагов.
 

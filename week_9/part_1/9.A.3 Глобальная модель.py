@@ -7,7 +7,7 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.19.6
+#       jupytext_version: 1.19.4
 #   kernelspec:
 #     display_name: "Python (ts-cu-2026 \xB7 week 9(dev))"
 #     language: python
