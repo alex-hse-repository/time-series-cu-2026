@@ -9,15 +9,26 @@
 #       format_version: '1.3'
 #       jupytext_version: 1.19.4
 #   kernelspec:
-#     display_name: "Python (ts-cu-2026 \xB7 week 9(dev))"
+#     display_name: "Python (ts-cu-2026 \xB7 week 9)"
 #     language: python
-#     name: ts-cu-2026-week9-dev
+#     name: ts-cu-2026-week9
 # ---
 
+# %%
+import sys
+import os
+
+# Проверяем, запущен ли ноутбук в среде Google Colab
+if "google.colab" in sys.modules:
+    # !pip install uv -q
+    # !wget https://raw.githubusercontent.com/alex-hse-repository/time-series-cu-2026/refs/heads/main/week_9/pyproject.toml -q
+    # !uv pip install -r pyproject.toml --system -q
+    os.kill(os.getpid(), 9)  # force runtime restart
+
 # %% [markdown]
-# # 9.A.3. Глобальная модель (ETNA, M4 Hourly)
+# # Глобальная модель (ETNA, M4 Hourly)
 #
-# В 9.A.1 бустинг на одном коротком ряде едва обгонял линейную модель. Его настоящая сила —
+# Бустинг на одном коротком ряде едва обгоняет линейную модель. Его настоящая сила —
 # **одна модель на много рядов**: деревья учат общие закономерности (суточный профиль, выходные)
 # сразу по всем рядам, и данных для обучения становится в сотни раз больше.
 #
@@ -65,8 +76,7 @@ H = 48
 # рядов — один и тот же час, тест идёт сразу после него. Дата старта условная.
 
 # %%
-train_wide = pd.read_csv(common.DATA / "Hourly-train.csv", index_col=0)
-test_wide = pd.read_csv(common.DATA / "Hourly-test.csv", index_col=0)
+train_wide, test_wide = common.load_m4_hourly()
 print(f"train: {train_wide.shape}, test: {test_wide.shape}")
 print("длины рядов:", train_wide.notna().sum(axis=1).value_counts().to_dict())
 
@@ -211,4 +221,5 @@ plot_forecast(
 # 2. **Глобальной модели надо снять масштаб**: иначе деревья тратят сплиты на то, «какой это ряд
 #    по уровню», а не на форму. Для положительных рядов лучший способ — логарифм.
 # 3. **Лаги ≥ H** позволяют одной модели прогнозировать весь горизонт сразу (как `Pipeline` в ETNA);
-#    другие способы использовать свежие значения — стратегии прогнозирования (блок 3).
+#    другие способы использовать свежие значения — стратегии прогнозирования, где модель либо
+#    рекурсивно подставляет свои прогнозы, либо учится отдельно на каждый шаг горизонта.

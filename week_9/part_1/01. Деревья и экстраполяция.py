@@ -14,8 +14,19 @@
 #     name: ts-cu-2026-week9
 # ---
 
+# %%
+import sys
+import os
+
+# Проверяем, запущен ли ноутбук в среде Google Colab
+if "google.colab" in sys.modules:
+    # !pip install uv -q
+    # !wget https://raw.githubusercontent.com/alex-hse-repository/time-series-cu-2026/refs/heads/main/week_9/pyproject.toml -q
+    # !uv pip install -r pyproject.toml --system -q
+    os.kill(os.getpid(), 9)  # force runtime restart
+
 # %% [markdown]
-# # 9.A.1. Деревья и экстраполяция (sktime, AirPassengers)
+# # Деревья и экстраполяция (sktime, AirPassengers)
 #
 # Градиентный бустинг — это не «улучшенная линейная регрессия». У него есть одна системная
 # **слабость**: дерево не экстраполирует. Лист дерева — среднее target по попавшим в него
@@ -247,7 +258,7 @@ run("deseason + detrend + month", features=["month_of_year"], detrend=True, dese
 #
 # Второй способ «сообщить» модели уровень ряда — лаговые признаки: последние 12 значений.
 # `make_reduction(..., strategy="recursive")` обучает модель на шаг вперёд, а на прогнозе подставляет
-# собственные прогнозы вместо неизвестных значений (подробно о стратегиях — блок 3).
+# собственные прогнозы вместо неизвестных значений.
 
 # %%
 lag_preds = {}
@@ -286,8 +297,9 @@ run("log + detrend + month", features=["month_of_year"], detrend=True, log=True)
 #
 # Детрендинг — это сильное допущение о будущем: модель тренда экстраполируется на весь горизонт.
 # Если тренд ломается, его надо оценивать по последнему участку (`ChangePointsTrendTransform`
-# из сем. 7). Ещё одно лекарство — linear trees (`linear_tree=True` в LightGBM): в листьях не
-# константа, а линейная модель, поэтому дерево экстраполирует само (лонгрид, §3.3).
+# в ETNA ищет изломы в истории и строит тренд отдельно на каждом отрезке). Ещё одно лекарство —
+# linear trees (`linear_tree=True` в LightGBM): в листьях не константа, а линейная модель,
+# поэтому дерево экстраполирует само.
 #
 # ## 7. Итоги
 
