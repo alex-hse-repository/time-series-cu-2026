@@ -24,8 +24,14 @@ def read_data(name: str, **kwargs) -> pd.DataFrame:
 
 
 def quiet() -> None:
-    """Глушит предупреждения и логи библиотек, чтобы в ноутбуке был виден только результат."""
+    """Глушит предупреждения и логи библиотек, чтобы в ноутбуке был виден только результат.
+
+    Одного ``filterwarnings("ignore")`` мало: sktime в своих контекстных менеджерах вызывает
+    ``filterwarnings("default", ...)``, и после первого ``fit`` фильтр «ignore» перестаёт
+    действовать. Поэтому глушим ещё и сам вывод предупреждений — ``showwarning``.
+    """
     warnings.filterwarnings("ignore")
+    warnings.showwarning = lambda *args, **kwargs: None
     for name in ("etna", "joblib", "statsmodels", "matplotlib", "py.warnings", "cmdstanpy"):
         logging.getLogger(name).setLevel(logging.ERROR)
     try:
@@ -34,7 +40,6 @@ def quiet() -> None:
         tslogger.loggers.clear()
     except ImportError:
         pass
-
 
 def mape(y_true, y_pred) -> float:
     """MAPE в процентах."""

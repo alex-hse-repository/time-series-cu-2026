@@ -24,8 +24,14 @@ def read_data(name: str, **kwargs) -> pd.DataFrame:
 
 
 def quiet() -> None:
-    """Глушит предупреждения и логи библиотек, чтобы в ноутбуке был виден только результат."""
+    """Глушит предупреждения и логи библиотек, чтобы в ноутбуке был виден только результат.
+
+    Одного ``filterwarnings("ignore")`` мало: sktime в своих контекстных менеджерах вызывает
+    ``filterwarnings("default", ...)``, и после первого ``fit`` фильтр «ignore» перестаёт
+    действовать. Поэтому глушим ещё и сам вывод предупреждений — ``showwarning``.
+    """
     warnings.filterwarnings("ignore")
+    warnings.showwarning = lambda *args, **kwargs: None
     for name in ("etna", "joblib", "statsmodels", "matplotlib", "py.warnings", "cmdstanpy"):
         logging.getLogger(name).setLevel(logging.ERROR)
     try:
@@ -44,6 +50,42 @@ def mape(y_true, y_pred) -> float:
 
 def mae(y_true, y_pred) -> float:
     return float(np.mean(np.abs(np.asarray(y_true, float) - np.asarray(y_pred, float))))
+
+
+def smape(y_true, y_pred) -> float:
+    """sMAPE в процентах — метрика M4, устойчива к нулям, в отличие от MAPE."""
+    y_true, y_pred = np.asarray(y_true, float), np.asarray(y_pred, float)
+    return float(np.mean(2 * np.abs(y_true - y_pred) / (np.abs(y_true) + np.abs(y_pred))) * 100)
+
+
+def make_panel(n_series: int = 60, n_obs: int = 132, seed: int = 0) -> pd.DataFrame:
+    """Синтетическая панель месячных рядов для сценария «много рядов»: 12 полных сезонов.
+
+    Три типа рядов вперемешку: детерминированный рост, случайное блуждание и сильная
+    мультипликативная сезонность. У каждого ряда свой уровень, фаза сезонности, амплитуда и шум,
+    поэтому ETS подбирает им разные параметры — в этом и смысл панели.
+
+    Возвращает широкую таблицу: строка — месяц, колонка — ряд.
+    """
+    rng = np.random.default_rng(seed)
+    months = np.arange(n_obs) % 12
+    kinds = rng.choice(["trend", "rw", "seasonal"], n_series, p=[0.3, 0.35, 0.35])
+    level0 = rng.uniform(50, 500, n_series)
+    growth = np.where(kinds == "trend", rng.uniform(0.005, 0.025, n_series), 0.0)
+    strength = np.where(kinds == "seasonal", rng.uniform(0.15, 0.45, n_series), rng.uniform(0.05, 0.15, n_series))
+    phase = rng.integers(0, 12, n_series)
+    noise = rng.uniform(0.03, 0.12, n_series)
+    season = 1 + strength[:, None] * np.sin(2 * np.pi * (np.arange(12)[None, :] + phase[:, None]) / 12)
+
+    t = np.arange(n_obs)
+    level = level0[:, None] * (1 + growth[:, None]) ** t[None, :]
+    shocks = rng.normal(0, 0.02, (n_series, n_obs))
+    rw = kinds == "rw"
+    level[rw] = level0[rw, None] * np.exp(np.cumsum(shocks[rw], axis=1))
+    values = level * season[:, months] * (1 + noise[:, None] * rng.normal(size=(n_series, n_obs)))
+
+    index = pd.period_range("2012-01", periods=n_obs, freq="M")
+    return pd.DataFrame(values.T, index=index, columns=[f"S{i:03d}" for i in range(n_series)])
 
 
 def load_airpassengers() -> pd.Series:
