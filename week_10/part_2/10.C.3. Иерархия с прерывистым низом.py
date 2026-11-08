@@ -7,11 +7,11 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.19.6
+#       jupytext_version: 1.19.4
 #   kernelspec:
-#     display_name: "Python (ts-cu-2026 \xB7 week 10(dev))"
+#     display_name: "Python (ts-cu-2026 \xB7 week 10)"
 #     language: python
-#     name: ts-cu-2026-week10-dev
+#     name: ts-cu-2026-week10
 # ---
 
 # %% [markdown]
@@ -56,7 +56,7 @@ INSAMPLE = 364  # последние дни обучения для долей �
 # и `dept_id` (7 отделов).
 
 # %%
-sales = pd.read_csv('../data/sales_train_validation.csv')
+sales = pd.read_csv('../data/sales_train_validation.csv.gz')
 calendar = pd.read_csv('../data/calendar.csv', parse_dates=['date'])
 
 sales_ca1 = sales[sales['store_id'] == 'CA_1']
@@ -210,11 +210,17 @@ Y_train_trim = Y_train[Y_train['ds'] >= Y_train['unique_id'].map(first_sale)]
 Y_eval = Y_rec.merge(Y_test, on=['unique_id', 'ds'])
 evaluation = evaluate(Y_eval, metrics=[partial(rmsse, seasonality=1), bias],
                       tags=tags, models=models, train_df=Y_train_trim)
+table_rmsse = evaluation[evaluation['metric'] == "rmsse"].drop(columns='metric').set_index('level')
+table_bias = evaluation[evaluation['metric'] == "bias"].drop(columns='metric').set_index('level')
 
-for metric in ['rmsse', 'bias']:
-    table = evaluation[evaluation['metric'] == metric].drop(columns='metric').set_index('level')
-    print(f'\n{metric.upper()}')
-    print(table.round(3).to_string())
+# %%
+table_rmsse.style.format('{:.3f}').highlight_min(axis=1, color='lightgreen')
+
+# %%
+table_bias
+
+# %%
+table_bias.abs().style.format('{:.3f}').highlight_min(axis=1, color='lightgreen')
 
 # %% [markdown]
 # ### Наблюдения
@@ -260,7 +266,7 @@ item_scores = rmsse(item_eval, models=models, seasonality=1,
 
 by_class = item_scores.groupby('class')[models].mean()
 by_class['товаров'] = item_scores['class'].value_counts()
-by_class.round(3)
+by_class.style.format('{:.3f}').highlight_min(axis=1, color='lightgreen')
 
 # %% [markdown]
 # ### Наблюдения

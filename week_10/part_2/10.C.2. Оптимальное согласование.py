@@ -9,9 +9,9 @@
 #       format_version: '1.3'
 #       jupytext_version: 1.19.4
 #   kernelspec:
-#     display_name: "Python (ts-cu-2026 \xB7 week 10(dev))"
+#     display_name: "Python (ts-cu-2026 \xB7 week 10)"
 #     language: python
-#     name: ts-cu-2026-week10-dev
+#     name: ts-cu-2026-week10
 # ---
 
 # %% [markdown]
