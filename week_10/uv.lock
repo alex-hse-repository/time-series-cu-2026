@@ -594,6 +594,15 @@ wheels = [
 ]
 
 [[package]]
+name = "et-xmlfile"
+version = "2.0.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/d3/38/af70d7ab1ae9d4da450eeec1fa3918940a5fafb9055e934af8d6eb0c2313/et_xmlfile-2.0.0.tar.gz", hash = "sha256:dab3f4764309081ce75662649be815c4c9081e88f0837825f90fd28317d4da54", size = 17234, upload-time = "2024-10-25T17:25:40.039Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c1/8b/5fe2cc11fee489817272089c4203e679c63b570a5aaeb18d852ae3cbba6a/et_xmlfile-2.0.0-py3-none-any.whl", hash = "sha256:7a91720bc756843502c3b7504c77b8fe44217c85c537d85037f0f536151b2caa", size = 18059, upload-time = "2024-10-25T17:25:39.051Z" },
+]
+
+[[package]]
 name = "executing"
 version = "2.3.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1501,6 +1510,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/cc/10/1cabf3188a4d9684a06568c7fd76f9536eede625733c8399cf1f5337b83e/omegaconf-2.4.0.tar.gz", hash = "sha256:7e219a70bea371da250285b9c01c7db027bc421722799c2cc4ff14bc4a2a753b", size = 3544508, upload-time = "2026-10-09T12:44:02.326Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/4f/bd/0d9f8247b0819385213d09564eda5c52d3673313c2414d51f72883ec24cd/omegaconf-2.4.0-py3-none-any.whl", hash = "sha256:f141a664c777582405e3cc6e0545ecc79429e79f844995b1a6e71c35946a025c", size = 254152, upload-time = "2026-10-09T12:43:59.764Z" },
+]
+
+[[package]]
+name = "openpyxl"
+version = "3.1.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "et-xmlfile" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/3d/f9/88d94a75de065ea32619465d2f77b29a0469500e99012523b91cc4141cd1/openpyxl-3.1.5.tar.gz", hash = "sha256:cf0e3cf56142039133628b5acffe8ef0c12bc902d2aadd3e0fe5878dc08d1050", size = 186464, upload-time = "2024-06-28T14:03:44.161Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c0/da/977ded879c29cbd04de313843e76868e6e13408a94ed6b987245dc7c8506/openpyxl-3.1.5-py2.py3-none-any.whl", hash = "sha256:5282c12b107bffeef825f4617dc029afaf41d0ea60823bbb665ef3079dc79de2", size = 250910, upload-time = "2024-06-28T14:03:41.161Z" },
 ]
 
 [[package]]
@@ -2552,11 +2573,13 @@ dependencies = [
     { name = "jinja2" },
     { name = "matplotlib" },
     { name = "nbclient" },
+    { name = "openpyxl" },
+    { name = "optuna" },
     { name = "pyarrow" },
     { name = "scikit-learn" },
     { name = "seaborn" },
     { name = "skforecast" },
-    { name = "sktime" },
+    { name = "sktime", extra = ["skpro"] },
     { name = "statsforecast" },
     { name = "statsmodels" },
     { name = "ts-etna" },
@@ -2572,11 +2595,13 @@ requires-dist = [
     { name = "jinja2", specifier = "~=3.1" },
     { name = "matplotlib", specifier = "~=3.11.1" },
     { name = "nbclient", specifier = "~=0.11.0" },
+    { name = "openpyxl", specifier = ">=3.1.5" },
+    { name = "optuna", specifier = "~=5.0.0" },
     { name = "pyarrow", specifier = "<20" },
     { name = "scikit-learn", specifier = "~=1.7.2" },
     { name = "seaborn", specifier = "~=0.13.2" },
     { name = "skforecast", specifier = "~=0.26.0" },
-    { name = "sktime", specifier = "~=1.2.0" },
+    { name = "sktime", extras = ["skpro"], specifier = "~=1.2.0" },
     { name = "statsforecast", specifier = "~=2.1.1" },
     { name = "statsmodels", specifier = "~=0.14.6" },
     { name = "ts-etna", specifier = "~=3.0.0" },
@@ -2631,6 +2656,23 @@ wheels = [
 ]
 
 [[package]]
+name = "skpro"
+version = "2.16.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "numpy" },
+    { name = "packaging" },
+    { name = "pandas" },
+    { name = "scikit-base" },
+    { name = "scikit-learn" },
+    { name = "scipy" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/15/ac/bab63a68159302af5d4a65bcd4dd79b59a100dc3f8c1078d117bd42ddfd8/skpro-2.16.0.tar.gz", hash = "sha256:63b54be0b6e845ee2992d08b9bf50c2b840c76c25df4a55a1d626dc899e93397", size = 478108, upload-time = "2026-09-27T21:57:20.435Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/db/3d/90cd108ac9f8a0f6838fce7cadafa0e25520fe62d358cc9f5daa531915ca/skpro-2.16.0-py3-none-any.whl", hash = "sha256:53ab0a0aa191815a5c53b487c28576721d7056bf23cac3665f268b92e4d3f0c8", size = 685900, upload-time = "2026-09-27T21:57:18.696Z" },
+]
+
+[[package]]
 name = "sktime"
 version = "1.2.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2646,6 +2688,11 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/46/a0/6ea64121398a8d3e23deb6db2c1dc7012afc65c23a28eda6cc06f6fb81bb/sktime-1.2.0.tar.gz", hash = "sha256:641425178b3215a0a8dbcf4e6948a8b589e46def39c91989f71d9fa297bc3709", size = 36398732, upload-time = "2026-09-22T22:11:15.066Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/eb/67/98c89e7a17691ca473b7cc7200f74e43e47ad61680db59bfe791f341b056/sktime-1.2.0-py3-none-any.whl", hash = "sha256:dbffc6731d2d683b668dceb5e2bbc5804bebc8446b4c580803a281684d90e4ae", size = 8201107, upload-time = "2026-09-22T22:11:11.09Z" },
+]
+
+[package.optional-dependencies]
+skpro = [
+    { name = "skpro" },
 ]
 
 [[package]]
