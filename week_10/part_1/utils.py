@@ -6,14 +6,13 @@
 """
 
 from functools import partial
-from pathlib import Path
 
 import numpy as np
 import pandas as pd
 from utilsforecast.evaluation import evaluate
 from utilsforecast.losses import bias, mae, rmsse
 
-DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+DATA_BASE = "https://raw.githubusercontent.com/alex-hse-repository/time-series-cu-2026/refs/heads/main/week_10/data"
 
 # Пороги Syntetos–Boylan (2005)
 ADI_THRESHOLD = 1.32
@@ -23,14 +22,13 @@ CLASSES = ["smooth", "intermittent", "erratic", "lumpy"]
 ID_COLS = ["id", "item_id", "dept_id", "cat_id", "store_id", "state_id"]
 
 
-def load_m5_ca1(calendar_cols=("date",), data_dir=DATA_DIR):
+def load_m5_ca1(calendar_cols=("date",), data_base=DATA_BASE):
     """M5, магазин CA_1, long-формат: одна строка = (товар, день).
 
     `calendar_cols` — какие столбцы `calendar.csv` подтянуть к продажам (`date` добавляется всегда).
     """
-    data_dir = Path(data_dir)
-    sales = pd.read_csv(data_dir / "sales_train_validation.csv.gz")
-    calendar = pd.read_csv(data_dir / "calendar.csv")
+    sales = pd.read_csv(f"{data_base}/sales_train_validation.csv.gz")
+    calendar = pd.read_csv(f"{data_base}/calendar.csv")
 
     sales_ca1 = sales[sales["store_id"] == "CA_1"]
     day_cols = [c for c in sales_ca1.columns if c.startswith("d_")]
