@@ -7,12 +7,23 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.19.5
+#       jupytext_version: 1.19.4
 #   kernelspec:
 #     display_name: "Python (ts-cu-2026 \xB7 week 11(dev))\n"
 #     language: python
 #     name: ts-cu-2026-week11-dev
 # ---
+
+# %%
+import os
+import sys
+
+# Проверяем, запущен ли ноутбук в среде Google Colab
+if "google.colab" in sys.modules:
+    # !pip install uv -q
+    # !wget https://raw.githubusercontent.com/alex-hse-repository/time-series-cu-2026/refs/heads/main/week_11/pyproject.toml -q
+    # !uv pip install -r pyproject.toml --system -q
+    os.kill(os.getpid(), 9)  # force runtime restart
 
 # %% [markdown]
 # # 11.2. N-BEATS: нелинейно, но интерпретируемо
@@ -88,7 +99,10 @@ def n_params(model):
 # 36 пропусков интерполируем.
 
 # %%
-raw = pd.read_csv("../data/energy_dataset.csv", usecols=["time", "total load actual", "total load forecast"])
+raw = pd.read_csv(
+    "https://raw.githubusercontent.com/alex-hse-repository/time-series-cu-2026/refs/heads/main/week_11/data/energy_dataset.csv",
+    usecols=["time", "total load actual", "total load forecast"],
+)
 energy = pd.DataFrame(
     {
         "unique_id": "Spain",
