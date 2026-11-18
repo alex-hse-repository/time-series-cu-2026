@@ -16,6 +16,7 @@
 | 8 | Prophet, BATS и TBATS                                          | [`week_8`](week_8/README.md) |
 | 9 | Деревья, глобальные модели и стратегии прогнозирования         | [`week_9`](week_9/README.md) |
 | 10 | Интервалы прогноза, прерывистый спрос и иерархические ряды     | [`week_10`](week_10/README.md) |
+| 11 | Нейросетевые модели (1): DLinear, N-BEATS, N-HiTS, NBEATSx, DeepAR | [`week_11`](week_11/README.md) |
 
 Структура каталога занятия одинаковая: `part_1/`, `part_2/` с ноутбуками, свои `pyproject.toml` и `uv.lock`, `README.md` со списком ноутбуков и ссылками на Colab.
 
