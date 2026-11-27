@@ -4,3 +4,7 @@
 # Требует авторизации в Kaggle (`kagglehub.competition_download`) и принятых
 # правил соревнования; в CI выполнить нельзя.
 week_1/part_2/3. Открытые источники данных временных рядов.ipynb
+
+# nanoTSFM, Simons и Tabby требуют Python 3.12+, а CI работает на 3.11:
+# в окружении CI этих пакетов нет.
+week_13/part_1/1. Foundation-модель изнутри.ipynb
