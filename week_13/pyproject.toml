@@ -1,0 +1,28 @@
+[project]
+name = "seminar-13"
+version = "0.1.0"
+description = "Foundation-модели для временных рядов"
+readme = "README.md"
+requires-python = ">=3.11"
+
+dependencies = [
+  "matplotlib~=3.11.2",
+  # семинар 1: модели изнутри. nanoTSFM требует Python 3.12+, в CI (3.11) эти пакеты не ставятся
+  "nanotsfm @ git+https://github.com/Abel-ai-lab/nanoTSFM@9c66ab3 ; python_version >= '3.12'",
+  "simons @ git+https://github.com/Abel-ai-lab/Simons@d70a6ed ; python_version >= '3.12'",
+  "tabby-tsfm[forecast] @ git+https://github.com/huawei-noah/trustworthyAI@8675af0#subdirectory=TabbyTSFM ; python_version >= '3.12'",
+  # семинар 2: модели на практике, бустинг, агенты
+  "chronos-forecasting~=2.3.2",
+  "darts[torch]~=0.48.1",
+  "skforecast~=0.27.0",
+  "fev~=0.10.0",
+  "statsforecast~=2.1.1",
+  "lightgbm~=4.6.0",
+  "holidays~=0.108",
+  "openai~=3.51.0",
+  # Jupyter
+  "ipykernel~=7.4.0",
+  "ipywidgets~=8.1.8",
+  "jinja2~=3.1",
+  "nbclient~=0.11.0",
+]
